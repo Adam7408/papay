@@ -1,10 +1,12 @@
+const dotenv = require("dotenv");
+dotenv.config();
 const http = require("http");
 
 const mongodb = require("mongodb");
 
-let db;
-const connectString =
-    "mongodb+srv://yusuf:z1pjfF3ozp6pofMj@cluster0.40fsowl.mongodb.net/Reja";
+
+const connectString = process.env.MONGO_URL;
+   
 
 mongodb.connect(
     connectString,
@@ -20,7 +22,7 @@ mongodb.connect(
 
             const app = require("./app");
             const server = http.createServer(app);
-            let PORT = 3000;
+            let PORT = process.env.PORT || 3000;
             server.listen(PORT, function () {
                 console.log(
                     `server portta muvaffaqiyatli,${PORT} portta ishlamoqda, http://localhost:${PORT}`
