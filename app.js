@@ -21,5 +21,5 @@ app.set("views","views");
 app.set("view engine","ejs");
 
 // 4:routing code
-
+app.use("/",router);
 module.exports =app;
