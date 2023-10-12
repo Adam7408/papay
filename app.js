@@ -1,7 +1,7 @@
 console.log("Web Serverni boshlash");
 const express = require("express");
 const app = express();
-
+const router = require("./router");
 // mongoDB chaqirish
 
 const db = require("./server").db();
