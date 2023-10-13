@@ -1,7 +1,7 @@
 let memberController = module.exports;
 
 memberController.home=(req,res) =>{
-    console.log("GET browserdagi homega ogri kirdi");
+    console.log("GET browserdagi homega user kirdi");
     res.send("home sahifadasiz");
 };
 memberController.signup=(req,res) =>{
