@@ -2,6 +2,7 @@ const Member = require("../models/Member");
 
 let memberController = module.exports;
 
+
 memberController.signup = async (req, res) => {
     try {
         console.log("POST: controll signupga kimdir kirdi");
@@ -16,6 +17,11 @@ memberController.signup = async (req, res) => {
         );
         res.json({ state: "neudachno", message: err.message });
     }
+}
+memberController.home=(req,res) =>{
+    console.log("GET browserdagi homega user kirdi");
+    res.send("home sahifadasiz");
+
 };
 memberController.login = async (req, res) => {
     try {
