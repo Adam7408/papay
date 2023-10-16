@@ -1,26 +1,20 @@
+
 const mongoose = require("mongoose"); 
-const { member_status_enums, member_type_enums } = require("../lib/config"); 
+const { member_status_enums, member_type_enums,ordernary_enums  } = require("../lib/config"); 
  
-// memberSchema Model orqali - MongoDB - ma'lumotlarni DataBasega yoza boshlaydi  
-// agar DataBasemiz bo'lmasa - MongoDB -- 자동으로 magrition qiladi, ya'ni 'collection' ochib beradi   
+
 const memberSchema = new mongoose.Schema({ 
-    // bizga 'member' bo'yicha nima kerak bo'ladi? 
-    /* 
-    ER Model qilgan paytimiz - mb_nick kerak edi 
- 
-    */ 
- 
-    // kimdir ishlatgan mb_nichni - boshqa odamlar ishlata olmasin 
-    // ya'ni 'unit' bolishi kerak degan shart bor 
+    
     mb_nick: { 
         type: String, 
         required: true, // talab qilinishi hardoim bo'lishi kerak 
         // shuni yozsak - agar mb_nick DataBasemizda ishlatilgan bo'lsa  - DataBasemiz - duplicated(takrorlangan) degan xatolikni yuboradi va DataBasega yozmaydi 
-        index: {unique: true, sparce: true} 
+        index: {unique: true, sparse: true} 
     }, 
     mb_phone: { 
         type: String, 
-        required: true 
+        required: true, 
+        index: {unique: true, sparse: true} 
     },  
     mb_password: { 
         type: String, 
@@ -105,19 +99,9 @@ const memberSchema = new mongoose.Schema({
         default: 0
     }, 
  
-    // MongoDB - 자동으로 ikki hil qiymatni qo'yib beradi  
-    // bular - 'createdAt', va 'updatedAt' 
-    // {timestamps: {createAt:'created_at',updatedAt:'updated_at'}}, 
-    timestamps:true
-}); 
+},
+    {timestamps:true}
+); 
  
- 
-// endi Modelni shakllantirib olamiz 
-/* 
-bizning Databasemiz - 'Member' so'zini avtomatik ravishta ko'plik shakllga o'tkazib oladi, biz birlik shaklini qo'yishimiz kerak 
-'Member'ni --> Members qilib oladi 
-Name yozsak --> Names qilib oladi 
- 
-model()ni ikkinchi qismiga - tepada yasab olgan 'memberSchema'mizni pass qilishimiz kerak 
-*/ 
+
 module.exports = mongoose.model("Member", memberSchema);

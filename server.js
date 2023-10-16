@@ -18,7 +18,7 @@ mongoose.connect(
         if (err) console.log("Error on connection MongoDB");
         else {
             console.log("MongoDB connection succeed");
-            console.log(goose);
+           
 
             const app = require("./app");
             const server = http.createServer(app);

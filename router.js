@@ -3,10 +3,17 @@ const router = express.Router();
 const memberController=require('./controllers/memberController');
 
 // memberga dahildor routerlar
-router.get("/",memberController.home);
+router.get("/",(req,res) =>{
+    memberController.home
+});
 router.post("/signup",memberController.signup);
-router.post("/login",memberController.login);
-router.get("/logout",memberController.logout);
+    
+router.post("/login", memberController.login);
+
+router.get("/logout",(req,res) =>{
+    memberController.logout
+});
+
 // boshqa routerlar
 router.get("/menu",(req,res)=>{
     res.send("Menu sahifadasiz");
