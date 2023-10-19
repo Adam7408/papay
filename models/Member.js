@@ -1,4 +1,4 @@
-// modulelar - classlar bilan hosil bo'ladi
+// modellar - classlar bilan hosil bo'ladi
 
 // user kiritgan ma'lumotlardan foydalanib - SIGNUPni hosil qilyapmiz
 
@@ -33,7 +33,7 @@ class Member {
         try{
             // DataBasega signup qilyatgan payt userimiz password yozadi
             // biz o'sha passwordni DataBasega sahranit qilishdan oldin 'hash' qilib olamiz 
-            const salt = await bcrypt.genSalt(); // shifrlaydi
+            const salt = await bcrypt.genSalt(); // o'zimiz ham bilmaydigan qilib shifrlab beradi
             input.mb_password = await bcrypt.hash(input.mb_password, salt); //  inputni ichidagi mb_passwordni o'zgartirmoqchimiz
             // bcrypt orqali hashing qilamiz - ya'ni, hamda birinchi qarameteri - inputdan kelayotgan mb_password bo'ladi, ikkinchi parameteri - salt bo'ladi
     
@@ -73,7 +73,7 @@ class Member {
             const isMatch = await bcrypt.compare( // inputga kiritilgan password bilan DataBasedan kelgan passwordni solishtirib, bizga tatijasini aytadi
                 input.mb_password,  // inputga kiritilgan password
                 member.mb_password  // DataBasedan kelgan password
-                );
+            );
 
             assert.ok(isMatch, Definer.auth_err4); // agar isMatch true bo'lsa o'tib ketaversin,  false bo'lsa - ERRORni chiqarsin
 
