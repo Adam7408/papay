@@ -45,3 +45,8 @@ memberController.logout = (req, res) => {
     res.send("Logout sahifadasiz");
 }
 
+
+
+
+
+

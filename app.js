@@ -12,9 +12,11 @@ const router_bssr = require('./router_bssr');
 let session = require('express-session'); // express-sessionni install qilamiz, va chaqirib olamiz
 const MongoDBStore = require('connect-mongodb-session')(session); // connect-mongodb-session - MongoDBni Storigeni hosil qilishda yordam beradigan MongoDB Session
 // MongoDBStore bu - CLASS
+
+// MongoDBga ulanish
 const store = new MongoDBStore({ // MongoDBStore classi orqali - store degan object yasab olamiz
-    uri: process.env.MONGO_URL, // store objectning birinchi parameteriga - process.envni ichidagi MONGO_URL(DataBase connection string)ni beramiz
-    collection: "sessions" // collectionning nomini sessions deymiz, MongoDBda sessions degan collection hosil bo'ladi, va uni ichida - Session Authenticationlar yoziladi
+    uri: process.env.MONGO_URL, // 1) parameter: - .env filedagi MONGO_URL(DataBase connection string)ni yozamiz
+    collection: "sessions" // 2) parameter: collectionning nomini sessions deymiz, MongoDBda sessions degan collection hosil bo'ladi, va uni ichida - Session Authenticationlar yoziladi
 });
 
 // 1: Kirish code  (Expressning 1nchi qismi)
@@ -34,18 +36,23 @@ app.use(exp.urlencoded({ extended: true })); // Traditional(BSSR) form postlarni
 
 // 2: Session code   (Expressning 1nchi qismi)
 app.use( 
-    session({ // object
+    session({ // object.   
         secret: process.env.SESSION_SECRET, // secret code bo'ladi, SESSION_SECRETni - .env filega yozib olamiz
         cookie: { // Session - cookielar bilan ishlayapti ya'ni - Session with Cookies
             maxAge: 1000 * 60 * 30, // Cookie pancha vaqt uchun bo'lsin? deyilyapti
-            // 1000 * 60 * 30 -- 
         },
         store: store, // store - avtamatik ravishda MongoDBning sessions collectioniga saqlansin
-        resave: true, // qayta saqlash - true
-        saveUninitialized: true
+        resave: true, // User - datalarini o'zgartirgan chog'ida ham - session datalarini qaytadan saqlasin
+        saveUninitialized: true // session-express - Userning DataBasedagi session datalarini saqlashni boshlasin
     })
 );
+// demak: sessionlarni ishga turishdir, MongoDBga ham uladik,  endi har qanday kelgan requestlar - session orqali o'tadi, shu yerda validation qilinadi
 
+// har bir kelayotgan request uchun - 
+app.use(function(req, res, next) {
+    res.locals.member = req.session.member; // responseni locals valiablini ichida member degan variablga - requestni session memberni yukla
+    next();
+});
 
 // 3: Views code    (Expressning 1nchi qismi) (ko'rinish codelar)
 
@@ -59,7 +66,6 @@ app.set("view engine", "ejs"); // view engine ya'ni template engine - 'ejs'ni is
 
 
 // 4: Routing code   (Expressning 1nchi qismi)
-
 
 // hamma app(express)ga kirib kelayotgan "/resto"lik requestlar(m: localhost:3000/resto/signup, ...) - 'router_bssr.js' filega o'tib ketsin
 app.use("/resto", router_bssr); // ( Traditional(BSSR) - EJS uchun ishlatamiz). Bu - ADMIN va RESTARANT userlar uchundir (BackEnddagi FrontEnd)
