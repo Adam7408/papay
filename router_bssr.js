@@ -1,10 +1,8 @@
-// router filemizni ichida esa - expressni require qilib olishimiz kerak!
-// va turli hil routerlarni shakllantiramiz 
+// clientlarning requestlarini 
 
-const express = require('express');
+const express = require('express'); // framework
 
-// expressning ichidan Routerni olib chiqamiz
-const router_bssr = express.Router();
+const router_bssr = express.Router(); // expressning ichidan Routerni olib chiqamiz
 const restaurantController = require("./controllers/restaurantController");
 const productController = require("./controllers/productController");
 const uploader_product = require('./utils/upload-multer')("products");
@@ -12,8 +10,6 @@ const uploader_product = require('./utils/upload-multer')("products");
 /**************************************************************************************
  *                      BSSR(EJS uchun kerak bo'lgan router)                          *
  **************************************************************************************/
-
-// Bu yerda - RESTAURANT Controller bo'ladi, bu ham SERVICE MODELni ishlatadi ya'ni 'MEMBER'ni
 
 // SIGNUP
 router_bssr
@@ -29,9 +25,10 @@ router_bssr
 router_bssr.get("/logout", restaurantController.logout);
 router_bssr.get("/check-me", restaurantController.checkSessions);
 
-
+// /PRODUCTS/MENU
 router_bssr.get("/products/menu",restaurantController.getMyRestaurantData); // restaurantga tegishli bo'lgan productlarni ma'lumotlarini olib kelsin
 
+// /PRODUCTS/CREATE
 router_bssr.post(
     "/products/create", 
     restaurantController.validateAuthRestaurant, // "only authenticated members with restaurant type"
@@ -39,9 +36,11 @@ router_bssr.post(
     productController.addNewProduct
 );
 
-router_bssr.post("/products/edit/:id", productController.updateChosenProduct);
+// /PRODUCTS/EDIT/:ID
+router_bssr.post(
+    "/products/edit/:id", 
+    restaurantController.validateAuthRestaurant,
+    productController.updateChosenProduct
+);
 
-// router_bssr.post("/products/edit");
-
-// hosil qilgan routerni export qiilb olamiz
-module.exports = router_bssr;
+module.exports = router_bssr; // hosil qilgan routerlarni export qilamiz 
