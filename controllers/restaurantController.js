@@ -1,27 +1,36 @@
-// bitta object yasab olamiz, hamda bu objectni - modulning ichidagi exportsga tenglashtiramiz
-// bu degani - endi biz bemalol 'memberController'larga - turli hil methodlarni yuklay olamiz degani
-// let restaurantController = module.exports;
-let restaurantController = module.exports;
-
+const Product = require("../models/Product");
 const Member = require("../models/Member");
 
+let restaurantController = module.exports; // restaurantController - bu object
 /*
 Bu yerda - BackEndni ichida FrontEnd qurilyapdi, demak biron bir operatsiya yuzaga kelishidan oldin ma'lum bir EJS pagega borish kerak
 misol uchun: GET orqali - qaysidir signup pagega yoki qaysidir login pagega borish kerak 
 */
 
-restaurantController.getMyRestaurantData = async (req, res) => { 
+restaurantController.home = (req, res) => {
+    try{
+        console.log("GET: restaurant homega kimdir kirdi");
+        res.render("home-page");
+    } catch(err) {
+        console.log(`ERROR: restaurant homega kirishda xatolik boldi! ${err.message}`);
+        res.json({state: 'muvaffaqiyatsiz!', message: err.message});
+    }
+}
+
+restaurantController.getMyRestaurantProducts = async (req, res) => { 
     try{
         // signupProcessini qilib bo'lgandan keyin - shu yerga keladi
         // productlarni - DataBasedan chaqirib olib - userni restaurant-menu pagesiga kutib oladi
 
-        console.log('GET: restaurantController.getMyRestaurantData kimdir kirdi!'); 
+        console.log('GET: getMyRestaurantProductsga kimdir kirdi!'); 
         // TODO: getMyRestaurant products
-        // kelajakda: productController va product Schema model hosil qilamiz, keyin shu yerga kelib - davom ettiramiz
+        // productController va product Schema model hosil qilamiz
+        const product = new Product();
+        const data = await product.getAllProductsDataResto(res.locals.member);
 
-        res.render('restaurant-menu'); // restaurant-menu.ejs
+        res.render("restaurant-menu", { restaurant_data: data });
     } catch(err){
-        console.log(`ERROR: restaurantController.getMyRestaurantData kirishda xatolik boldi! ${err.message}`);
+        console.log(`ERROR: getMyRestaurantProductsga kirishda xatolik boldi! ${err.message}`);
         res.json({state: 'muvaffaqiyatsiz!', message: err.message});
     }
 }

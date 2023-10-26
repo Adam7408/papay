@@ -1,26 +1,22 @@
-<!-- Browserdan - 'localhost:3000/resto/restaurant-menu'ga kirsak - shu 'signup.ejs'ning kodlar chiqadi --> 
- 
-<!-- <head> qismini chaqirib olamiz --> 
-    <%- include("includes/header") %> 
-    <!--  
-        include - bu templating engine(ejs) ichidagi bir operatori. 
-        U - ma'lumotlar yoki kodni bir fayldan boshqa bir faylga qo'shish uchun ishlatiladi.  
-    --> 
-     
-        <body> 
-            <h1>My restaurant page</h1> 
- 
-            <% if(!member) {%> 
-                <h2>siz authenticated emassiz</h2> 
-            <% } else { %> 
- 
-                <h2> 
-                    siz authenticated bolgansiz, va sizning nickingiz <%= member.mb_nick%> 
-                 
-                    <p>sizning telefoningiz <%= member.mb_phone%></p> 
-                </h2> 
- 
-            <% } %> 
-        </body> 
-     
+<!-- Browserdan - 'localhost:3000/resto/restaurant-menu'ga kirsak - shu 'signup.ejs'ning kodlar chiqadi -->
+
+<!-- <head> qismini chaqirib olamiz -->
+    <%- include("includes/header") %>
+    
+        <body>
+            <h1>My restaurant page</h1>
+
+            <% if(!member) {%>
+                <h2>siz authenticated emassiz</h2>
+            <% } else { %>
+
+                <h2>
+                    siz authenticated bolgansiz, va sizning nickingiz <%= member.mb_nick%>
+                
+                    <p>sizning telefoningiz <%= member.mb_phone%></p>
+                </h2>
+
+            <% } %>
+        </body>
+    
     <%- include('includes/footer') %>

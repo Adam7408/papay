@@ -1,8 +1,6 @@
-// clientlarning requestlarini 
+const exp = require('express');
 
-const express = require('express'); // framework
-
-const router_bssr = express.Router(); // expressning ichidan Routerni olib chiqamiz
+const router_bssr = exp.Router(); 
 const restaurantController = require("./controllers/restaurantController");
 const productController = require("./controllers/productController");
 const uploader_product = require('./utils/upload-multer')("products");
@@ -11,10 +9,13 @@ const uploader_product = require('./utils/upload-multer')("products");
  *                      BSSR(EJS uchun kerak bo'lgan router)                          *
  **************************************************************************************/
 
+// HOME
+router_bssr.get("/",restaurantController.home);
+
 // SIGNUP
 router_bssr
-    .get("/signup",restaurantController.getSingupMyRestaurant)
-    .post("/signup", restaurantController.signupProcess);
+    .get("/sign-up",restaurantController.getSingupMyRestaurant)
+    .post("/sign-up", restaurantController.signupProcess);
 
 // LOGIN
 router_bssr
@@ -26,13 +27,13 @@ router_bssr.get("/logout", restaurantController.logout);
 router_bssr.get("/check-me", restaurantController.checkSessions);
 
 // /PRODUCTS/MENU
-router_bssr.get("/products/menu",restaurantController.getMyRestaurantData); // restaurantga tegishli bo'lgan productlarni ma'lumotlarini olib kelsin
+router_bssr.get("/products/menu",restaurantController.getMyRestaurantProducts); 
 
 // /PRODUCTS/CREATE
 router_bssr.post(
     "/products/create", 
-    restaurantController.validateAuthRestaurant, // "only authenticated members with restaurant type"
-    uploader_product.array("product_images", 5), // 5tagacha
+    restaurantController.validateAuthRestaurant, 
+    uploader_product.array("product_images", 5), 
     productController.addNewProduct
 );
 
@@ -43,4 +44,4 @@ router_bssr.post(
     productController.updateChosenProduct
 );
 
-module.exports = router_bssr; // hosil qilgan routerlarni export qilamiz 
+module.exports = router_bssr; 

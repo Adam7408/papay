@@ -34,9 +34,8 @@ class Member {
             // DataBasega signup qilyatgan payt userimiz password yozadi
             // biz o'sha passwordni DataBasega sahranit qilishdan oldin 'hash' qilib olamiz 
             const salt = await bcrypt.genSalt(); // o'zimiz ham bilmaydigan qilib shifrlab beradi
-            input.mb_password = await bcrypt.hash(input.mb_password, salt); //  inputni ichidagi mb_passwordni o'zgartirmoqchimiz
-            // bcrypt orqali hashing qilamiz - ya'ni, hamda birinchi qarameteri - inputdan kelayotgan mb_password bo'ladi, ikkinchi parameteri - salt bo'ladi
-    
+            input.mb_password = await bcrypt.hash(input.mb_password, salt); 
+            
             let result; // bu object
             const new_member = new this.memberModel(input); // new this.memberModel(input) - Schema Model Class
             try{ // MongoDB boshqacha formatdagi xatolikni beradi, shuning uchun try{} catch(){}ni ishlatamiz
