@@ -37,7 +37,6 @@ restaurantController.getMyRestaurantProducts = async (req, res) => {
 
 //================================================= GET ===============================================================
 
-// (signup pageni ochib ber) degan request kelyapti
 restaurantController.getSingupMyRestaurant = async (req, res) => { 
     try{
         console.log('GET: getSingupMyRestaurantga kimdir kirdi!'); 
@@ -47,20 +46,18 @@ restaurantController.getSingupMyRestaurant = async (req, res) => {
         res.json({state: 'muvaffaqiyatsiz!', message: err.message});
     }
 }
-// GET qismini shakllantirib bo'ldik
-//-----------------------------------------------------------------------------------------------------------------------------
 
 
 //================================================= POST ===============================================================
 restaurantController.signupProcess = async (req, res) => {
     try{
-        console.log('POST: controller.signupga kimdir kirdi!'); // routerdan kirib kelyatgan requestni 
+        console.log('POST: signupProcessga kimdir kirdi!'); // routerdan kirib kelyatgan requestni 
         
         const data = req.body; // requestni body qismidan ma'lumotni olamiz
         const member = new Member();
         const new_member = await member.signupData(data);
 
-        req.session.aa = new_member; // requestning ichiga sessionni - member bilan hosil qilamiz, va new_memberni tenglab qo'yamiz
+        req.session.member = new_member; // requestning ichiga sessionni - member bilan hosil qilamiz, va new_memberni tenglab qo'yamiz
         // shundan keyin - user request qilsa - Server uni taniydi, ya'ni Server - member objectining ichiga qarasa - Userning datalari turadi
 
         // signupProcessi qilingandan keyin - userni localhost:3000/resto/products/menuga yuboradi
@@ -76,7 +73,6 @@ restaurantController.signupProcess = async (req, res) => {
     }
 
 };
-// POST qismini shakllantirib bo'ldik
 
 //============================================== GET ===============================================================
 restaurantController.getLoginMyRestaurant = async (req, res) => {
@@ -92,24 +88,20 @@ restaurantController.getLoginMyRestaurant = async (req, res) => {
 //============================================== POST ===============================================================
 restaurantController.loginProcess = async (req, res) => {
     try{
-        console.log('POST: controller.loginga kimdir kirdi!'); // routerdan kirib kelyatgan requestni 
+        console.log('POST: loginProcessga kimdir kirdi!'); 
         
-        const data = req.body; // requestni body qismidan ma'lumotni olamiz
+        const data = req.body; 
+
         const member = new Member();
         const result = await member.loginData(data);
 
         req.session.member = result; 
         
-        // login bo'lgan memberga qarab - turli hil routerlarga yuborsak bo'ladi
-        req.session.save(function() { // save() method
-            res.redirect("/resto/products/menu"); // boshpa pagega yuborish methodi
+        req.session.save(function() { 
+            result.mb_type === 'ADMIN' 
+            ? res.redirect("/resto/all-restaurant") 
+            : res.redirect("/resto/products/menu"); 
         });
-
-        /*
-        hozirgacha - signup, login qilganda - sessionni qanday hosil qilishni ko'rib chiqdik 
-        endi uni ishlatishni ko'rib chiqamiz:
-        sessionning mantigi shuki: "biz login bo'lgan paytimiz - Serverdan qandaydir tamg'a(ruhsat qog'oz, bilet) bostirib olamiz, va bu tamg'ani o'zimiz bilan birga olib yuramiz, keyin Serverga get yoki post request qilganimizda - Server bizni request qilganini session orqali taniydi(sessionimizni vaqti tugagandan keyin - Server bizni tanimaydi)
-        */
 
     } catch(err){
         console.log(`ERROR: controller.loginga kirishda xatolik boldi! ${err.message}`);

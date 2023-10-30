@@ -1,22 +1,19 @@
-<!-- Browserdan - 'localhost:3000/resto/restaurant-menu'ga kirsak - shu 'signup.ejs'ning kodlar chiqadi -->
+<%- include("includes/header") %>
 
-<!-- <head> qismini chaqirib olamiz -->
-    <%- include("includes/header") %>
-    
-        <body>
-            <h1>My restaurant page</h1>
+    <body>
+        <h1>My restaurant page</h1>
 
-            <% if(!member) {%>
-                <h2>siz authenticated emassiz</h2>
-            <% } else { %>
+        <% if(!member) {%>
+            <h2>siz authenticated emassiz</h2>
+        <% } else { %>
 
-                <h2>
-                    siz authenticated bolgansiz, va sizning nickingiz <%= member.mb_nick%>
-                
-                    <p>sizning telefoningiz <%= member.mb_phone%></p>
-                </h2>
+            <h2>
+                siz authenticated bolgansiz, va sizning nickingiz <%= member.mb_nick%>
+            
+                <p>sizning telefoningiz <%= member.mb_phone%></p>
+            </h2>
 
-            <% } %>
-        </body>
-    
-    <%- include('includes/footer') %>
+        <% } %>
+    </body>
+
+<%- include('includes/footer') %>
