@@ -1,15 +1,201 @@
-<!-- Browserdan - 'localhost:3000/resto/signup'ga kirsak - shu 'signup.ejs'ning kodlar chiqadi -->
+<%- include("includes/header") %>
 
-<!-- <head> qismini chaqirib olamiz -->
-  <%- include("includes/header") %>
-  <!-- 
-      include - bu templating engine(ejs) ichidagi bir operatori.
-      U - ma'lumotlar yoki kodni bir fayldan boshqa bir faylga qo'shish uchun ishlatiladi. 
-  -->
-  
-      <body>
-          <h1>Signup page</h1>
-      </body>
-  
-  <!-- footer qismini chaqirib olamiz -->
-  <%- include('includes/footer') %>
+<link rel="stylesheet" type="text/css" href="/css/login.css" />
+
+<body>
+    <form
+        onsubmit="return validateSignUpForm()"
+        class="login_container"
+        action="/resto/sign-up"
+        ,
+        method="POST"
+        enctype="multipart/form-data"
+    >
+        <div class="login_frame" style="width: 650px; height: 730px">
+            <!-- LOGIN TOP -->
+            <div class="login_top">
+                <span>Ro'yhatdan o'tish</span>
+                <div>
+                    Bosh sahifaga qaytish
+                    <a href="/resto" style="color: #6440fb">Home</a>
+                </div>
+                <p>
+                    Ro'yhatdan allaqachon o'tganmisiz?
+                    <a href="/resto/login" style="color: #6440fb">Login</a>
+                </p>
+            </div>
+
+            <!-- mb_nick va mb_phone -->
+            <div class="signup_input_frame">
+                <!-- mb_nick -->
+                <div class="sign_up_frame">
+                    <label>Username</label>
+                    <input
+                        type="text"
+                        name="mb_nick"
+                        class="mb_nick"
+                        placeholder="Username"
+                        value=""
+                        required
+                    />
+                </div>
+
+                <!-- mb_phone -->
+                <div class="sign_up_frame">
+                    <label>Tel raqam</label>
+                    <input
+                        type="text"
+                        name="mb_phone"
+                        class="mb_phone"
+                        placeholder="Tel raqam"
+                        value=""
+                        required
+                    />
+                </div>
+            </div>
+
+            <!-- mb_password -->
+            <div class="signup_input_frame">
+                <!-- mb_password -->
+                <div class="sign_up_frame">
+                    <label>Password</label>
+                    <input
+                        type="password"
+                        name="mb_password"
+                        class="mb_password"
+                        placeholder="Password"
+                        value=""
+                        required
+                    />
+                </div>
+
+                <!-- mb_passwordni tasdiqlash -->
+                <div class="sign_up_frame">
+                    <label>Passwordni tasdiqlash</label>
+                    <input
+                        type="password"
+                        name="mb_confirm_password"
+                        class="mb_confirm_password"
+                        placeholder="Passwordni tasdiqlash"
+                        value=""
+                        required
+                    />
+                </div>
+            </div>
+
+            <!-- IMAGE -->
+            <div class="login_input_frame">
+                <div class="media-frame">
+                    <img
+                        class="upload_img_frame"
+                        src="/images/default_resto.jpg"
+                        alt=""
+                    />
+                    <div class="upload_container">
+                        <span class="media_text">Taom Rasmi</span>
+                        <div class="filebox bs3-primary preview-image">
+                            <input
+                                class="upload-name"
+                                value="Rasmni tanlang"
+                                disabled="disabled"
+                            />
+                            <label for="input_file">Rasm Yuklash</label>
+                            <input
+                                type="file"
+                                id="input_file"
+                                name="restaurant_img"
+                                class="upload-hidden form-control-file restaurant_img"
+                            />
+                        </div>
+                        <p class="thumbnail_desc">
+                            Oshhona rasmingizni bu yerga yuklang, <br />Muhim
+                            ko'rsatmalar: .jpg, .jpeg, yoki .png. <br />rasmda
+                            matn yo'q bo'lishi darkor!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- signup button -->
+            <button class="login_btn btn" name="signup" type="submit">
+                Ro'yhatdan o'tish
+            </button>
+        </div>
+    </form>
+</body>
+
+<!-- SCRIPT -->
+<script>
+    $(function () {
+        let fileTarget = $(".filebox .upload-hidden");
+        let filename = "";
+
+        fileTarget.on("change", function () {
+            if (window.FileReader) {
+                const uploading_file = $(this)[0].files[0]; // JQueary library orqali - HTML elementi tanlandi va [0] indeksi orqali JavaScript elementini oldi, files[0] esa - faylni HTML Fayl tanlash elementidan olinadi. Fayl tanlash elementi ko'rsatkichini yozish bilan fayl olinadi
+
+                const fileType = uploading_file["type"]; // Olingan faylning turi (type atributi)ni fileType variablega solamiz
+
+                const validImageTypes = [
+                    "image/jpg",
+                    "image/jpeg",
+                    "image/png",
+                ]; // User kiritishi kerak bo'lgan tiplarni validImageTypes variablega soldik
+
+                if (!validImageTypes.includes(fileType)) {
+                    // agar - fileTypeni ichida - validImageTypes bo'lmasa(ya'ni fileni tipida - jpg, jpeg, png yo'q bo'lsa)
+
+                    alert(
+                        "Iltimos ruhsat etilgan formatdagi rasmlarni yuklang: jpg, jpeg, va png!"
+                    );
+                } else {
+                    // aks holda
+                    if (uploading_file) {
+                        // agar uploading_file mavjud bo'lsa (ya'ni fayl tanlangan bo'lsa)
+                        console.log(URL.createObjectURL(uploading_file)); // Fileni browserda ko'rish uchun - fileni URL addressini browser consoliga chiqaramiz
+                        $(".upload_img_frame") // JQuery orqali - .upload_img_frame classiga ega bo'lgan inputni olyapmiz
+                            .attr("src", URL.createObjectURL(uploading_file)) // va JQueryning attr(attribute) methodi orqali - .upload_img_frame classiga ega bo'lgan <input>ning 'src' attributini - User tanlagan filening URL addressiga o'zgartirib qo'yamiz
+                            .addClass("udachno"); // va 'udachno' degan classni qo'shsin
+                        // addClass methodi - HTML elementiga class qo'shish uchun ishlatiladi
+                    }
+                    filename = uploading_file.name; // name propertydan foydalanib - User tanlagan filening nomini olib - filenamega solyapmiz
+                    // "name" bu JavaScript File obyektining propertysidir, yani filening nomini olish uchun - File obyektining ichida mavjud bo'lgan propertydir
+                }
+            }
+
+            $(this).siblings(".upload-name").val(filename);
+        });
+    });
+
+    function validateSignUpForm() {
+        const mb_nick = $(".mb_nick").val();
+        const mb_phone = $(".mb_phone").val();
+        const mb_password = $(".mb_password").val();
+        const mb_confirm_password = $(".mb_confirm_password").val();
+        const restaurant_img = $(".restaurant_img").get(0).files[0] ?? null;
+
+        // alert(`mb_nick: ${mb_nick}, mb_phone: ${mb_phone}, mb_password: ${mb_password}, mb_mb_confirm_password: ${mb_confirm_password}`);
+
+        if (
+            mb_nick == "" ||
+            mb_phone == "" ||
+            mb_password == "" ||
+            mb_confirm_password == ""
+        ) {
+            alert("Iltimos hamma malumotlarni kiriting!");
+            return false;
+        } else if (mb_password !== mb_confirm_password) {
+            alert(`Iltimos passwordni to'g'ri kiriting!`);
+            return false;
+        }
+
+        if (!restaurant_img) {
+            alert("Iltimos rasmni yuklang!");
+            return false;
+        }
+
+        return true;
+    }
+</script>
+
+<%- include('includes/footer') %>
