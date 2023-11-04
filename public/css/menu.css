@@ -9,19 +9,19 @@
     align-items: center;
     background: #2c261e;
 }
-
-.restaurant_menu_frame .restaurant_container {
+  
+  .restaurant_menu_frame .restaurant_container {
     position: relative;
     margin-top: 100px;
     width: 1320px;
     height: auto;
-
+  
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.restaurant_container .dishs_table {
+  }
+  
+  .restaurant_container .dishs_table {
     position: relative;
     width: 100%;
     height: auto;
@@ -29,9 +29,9 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.restaurant_container .resto_table {
+  }
+  
+  .restaurant_container .resto_table {
     position: relative;
     width: 85%;
     height: auto;
@@ -39,22 +39,22 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.switch {
+  }
+  
+  .switch {
     position: relative;
     display: inline-block;
     width: 50px;
     height: 20px;
-}
-
-.switch input {
+  }
+  
+  .switch input {
     opacity: 0;
     width: 0;
     height: 0;
-}
-
-.slider {
+  }
+  
+  .slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -64,9 +64,9 @@
     background-color: #ccc;
     -webkit-transition: 0.4s;
     transition: 0.4s;
-}
-
-.slider:before {
+  }
+  
+  .slider:before {
     position: absolute;
     content: "";
     height: 14px;
@@ -74,34 +74,34 @@
     left: 6px;
     bottom: 3.5px;
     background-color: white;
-    -webkit-transition: 0.4s;
-    transition: 0.4s;
-}
-
-input:checked + .slider {
+    -webkit-transition: .4s;
+    transition: .4s;
+  }
+  
+  input:checked + .slider {
     background-color: #2196f3;
-}
-
-input:focus + .slider {
+  }
+  
+  input:focus + .slider {
     box-shadow: 0 0 1px #2196f3;
-}
-
-input:checked + .slider:before {
+  }
+  
+  input:checked + .slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
+  }
+  
+  /* Rounded sliders */
+  .slider.round {
     border-radius: 34px;
-}
-
-.slider.round:before {
+  }
+  
+  .slider.round:before {
     border-radius: 50%;
-}
-
-.spec_select {
+  }
+  
+  .spec_select {
     position: relative;
     padding: 0px 7px;
     /*width: 100%;*/
@@ -115,125 +115,125 @@ input:checked + .slider:before {
     font-size: 15px;
     line-height: 26px;
     color: #4f547b;
-}
-
-.restaurant_container .dish_container {
+  }
+  
+  .restaurant_container .dish_container {
     position: relative;
     margin-top: 20px;
     width: 100%;
     height: auto;
-
+  
     display: none;
     flex-direction: column;
     align-items: center;
-}
-
-.long_input {
+  }
+  
+  .long_input {
     position: relative;
     margin-top: 25px;
     width: 100%;
     height: auto;
     display: flex;
     flex-direction: column;
-}
-
-.new_dish_txt {
+  }
+  
+  .new_dish_txt {
     font-family: "Source Serif Pro";
     font-style: normal;
     font-weight: 400;
     font-size: 30px;
     line-height: 25px;
     color: #ffffff;
-}
-
-.long_input {
+  }
+  
+  .long_input {
     position: relative;
     margin-top: 25px;
     width: 100%;
     height: auto;
     display: flex;
     flex-direction: column;
-}
-
-.long_input label {
+  }
+  
+  .long_input label {
     font-family: "Source Serif Pro";
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
     line-height: 25px;
     color: #ffffff;
-}
-
-.long_input input {
+  }
+  
+  .long_input input {
     position: relative;
     margin-top: 10px;
     padding-left: 20px;
     width: 100%;
     height: 54px;
     border: none;
-
+  
     background: #f7f7f7;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
-
+  
     font-family: "GT Walsheim Pro";
     font-style: normal;
     font-weight: 400;
     font-size: 15px;
     line-height: 26px;
     color: #4f547b;
-}
-
-.login_input_frame {
+  }
+  
+  .login_input_frame {
     position: relative;
     width: 100%;
     height: auto;
     display: flex;
     flex-direction: column;
-}
-
-.dish_container .half_input_frame {
+  }
+  
+  .dish_container .half_input_frame {
     position: relative;
     margin-top: 25px;
     width: 100%;
     height: auto;
-
+  
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-}
-
-.half_input_frame .half_input {
+  }
+  
+  .half_input_frame .half_input {
     position: relative;
     width: 49%;
     height: auto;
     display: flex;
     flex-direction: column;
-}
-
-.half_input label {
+  }
+  
+  .half_input label {
     font-family: "Source Serif Pro";
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
     line-height: 25px;
     color: #ffffff;
-}
-
-.half_input input {
+  }
+  
+  .half_input input {
     position: relative;
     margin-top: 10px;
     padding-left: 20px;
     width: 100%;
     height: 54px;
     border: none;
-
+  
     background: #f7f7f7;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
-}
-
-.half_input select {
+  }
+  
+  .half_input select {
     position: relative;
     margin-top: 10px;
     padding: 0px 20px;
@@ -244,43 +244,43 @@ input:checked + .slider:before {
     background: #f7f7f7;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
-
+  
     font-family: "GT Walsheim Pro";
     font-style: normal;
     font-weight: 400;
     font-size: 15px;
     line-height: 26px;
     color: #4f547b;
-}
-
-.long_input textarea {
+  }
+  
+  .long_input textarea {
     position: relative;
     margin-top: 10px;
     padding: 20px;
     width: 100%;
     height: 200px;
     border: none;
-
+  
     background: #f7f7f7;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     border-radius: 5px;
-
+  
     font-family: "GT Walsheim Pro";
     font-style: normal;
     font-weight: 400;
     font-size: 15px;
     line-height: 26px;
     color: #4f547b;
-}
-
-.img_frame {
+  }
+  
+  .img_frame {
     position: relative;
     width: 100%;
     display: flex;
     flex-direction: column;
-}
-
-.img_frame label {
+  }
+  
+  .img_frame label {
     margin-top: 30px;
     font-family: "Source Serif Pro";
     font-style: normal;
@@ -288,32 +288,34 @@ input:checked + .slider:before {
     font-size: 16px;
     line-height: 25px;
     color: #ffffff;
-}
-
-.media-frame {
+  }
+  
+  .media-frame {
     position: relative;
     margin-top: 10px;
     width: 100%;
     height: 250px;
-
+  
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-}
-
-.media-frame .upload_img_box {
+  }
+  
+  .media-frame .upload_img_box {
     position: relative;
     width: 19%;
     height: 100%;
-
+  
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 10px;
+    /*border: 1px solid dodgerblue;*/
+    /*background: white;*/
     cursor: pointer;
-}
-
-.upload_img_box img {
+  }
+  
+  .upload_img_box img {
     position: relative;
     width: 100%;
     height: 100%;
