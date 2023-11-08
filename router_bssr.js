@@ -1,33 +1,31 @@
-const exp = require('express'); 
-const router_bssr = exp.Router(); 
+const exp = require("express");
+const router_bssr = exp.Router();
 
 const restaurantController = require("./controllers/restaurantController");
 const productController = require("./controllers/productController");
 
-const uploader_product = require('./utils/upload-multer')("products");
-const uploader_members = require('./utils/upload-multer')("members");
-
+const uploader_product = require("./utils/upload-multer")("products");
+const uploader_members = require("./utils/upload-multer")("members");
 
 /**************************************************************************************
  *                      BSSR(EJS uchun kerak bo'lgan router)                          *
  **************************************************************************************/
 
-
 // HOME
-router_bssr.get("/",restaurantController.home);
+router_bssr.get("/", restaurantController.home);
 
 // SIGN-UP
 router_bssr
-    .get("/sign-up",restaurantController.getSingupMyRestaurant)
+    .get("/sign-up", restaurantController.getSingupMyRestaurant)
     .post(
-        "/sign-up", 
-        uploader_members.single('restaurant_img'), 
+        "/sign-up",
+        uploader_members.single("restaurant_img"),
         restaurantController.signupProcess
     );
 
 // LOGIN
 router_bssr
-    .get("/login",restaurantController.getLoginMyRestaurant)
+    .get("/login", restaurantController.getLoginMyRestaurant)
     .post("/login", restaurantController.loginProcess);
 
 // LOGOUT
@@ -38,13 +36,14 @@ router_bssr.get("/check-me", restaurantController.checkSessions);
 router_bssr.get(
     "/products/menu",
     restaurantController.validateAuthRestaurant,
-    restaurantController.getMyRestaurantProducts); // restaurantga tegishli bo'lgan productlarni ma'lumotlarini olib kelsin
+    restaurantController.getMyRestaurantProducts
+); // restaurantga tegishli bo'lgan productlarni ma'lumotlarini olib kelsin
 
 // (RESTAURANT) create product
 router_bssr.post(
-    "/products/create", 
-    restaurantController.validateAuthRestaurant, 
-    uploader_product.array("product_images", 5), 
+    "/products/create",
+    restaurantController.validateAuthRestaurant,
+    uploader_product.array("product_images", 5),
     productController.addNewProduct
 );
 
@@ -56,16 +55,17 @@ router_bssr.post(
 );
 
 // (ADMIN) all restaurant
-router_bssr.get( 
+router_bssr.get(
     "/all-restaurant",
     restaurantController.validateAdmin,
-    restaurantController.getAllRestaurants 
+    restaurantController.getAllRestaurants
 );
 
 // (ADMIN) edit restaurant
-router_bssr.post( 
+router_bssr.post(
     "/all-restaurant/edit",
     restaurantController.validateAdmin,
-    restaurantController.updateRestaurantByAdmin );
+    restaurantController.updateRestaurantByAdmin
+);
 
-module.exports = router_bssr; 
+module.exports = router_bssr;
