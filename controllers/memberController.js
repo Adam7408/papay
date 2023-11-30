@@ -1,52 +1,87 @@
-// bitta object yasab olamiz, hamda bu objectni - modulning ichidagi exportsga tenglashtiramiz
-// bu degani - endi biz bemalol 'memberController'larga - turli hil methodlarni yuklay olamiz degani
 let memberController = module.exports;
 
 const Member = require("../models/Member");
+const jwt = require('jsonwebtoken');
+const assert = require('assert');
+const Definer = require('../lib/mistake');
 
-// 'router.js'dagi routerning yuborgan(POST qilgan) request - shu signup() methodga keladi
-memberController.signup = async (req, res) => { // signup() - methodi - asunc methoddir ya'ni async callback emas!    callback esa - 'router.js'dan keldi! (Chunki bu - 'router.js'dagi routerning davomi)
-    try{ // async functionda - hardoim try catch() bo'lishi shart
-        console.log('POST: controller / signupga kimdir kirdi!');
-        const data = req.body; // routerdan kelgan requestning bodysini(mb_nick: ali, mb_password: ali2000, mb_phone: 123456789) dataga solib oldik
+memberController.signup = async (req, res) => { 
+    try{ 
+        console.log('POST: Kimdir SIGNUP qildi!');
+        const data = req.body; 
 
-        const member = new Member(); // Member Service Modeldan instance olamiz, ya'ni object yasaymiz
-        const new_member = await member.signupData(data); // signupData() methodiga datani berdik, va qaygan javobni - new_memberga solib oldik
+        const member = new Member(); 
+        const new_member = await member.signupData(data); 
 
-        // AUTHENTICATE BASED ON JWT (Json Web Token - Tokenlarni Cookie ichida ishlaydigan method)
+        const token = memberController.createToken(new_member);
+		res.cookie('access_token', token, {
+			maxAge: 6 * 3600 * 1000,
+			httpOnly: false,
+		});
 
         res.json({state: 'muvaffaqiyatli', data: new_member});
-    } catch(err){ // catch()ni qo'yishimiz sababi: 'try'da - xatolik chiqsa - catch() ushlab oladi
-        console.log(`ERROR: controller / signupga kirishda xatolik boldi! ${err.message}`); 
-        res.json({state: 'muvaffaqiyatsiz', message: err.message}); // Browserga xatolikni yuboradi
+    } catch(err){ 
+        console.log(`ERROR: SIGNUP qilishda xatolik boldi! ${err.message}`); 
+        res.json({state: 'muvaffaqiyatsiz', message: err.message}); 
     }
 };
 
-// memberController objecti - signup methodini ishga tushiryapdi
 memberController.login = async (req, res) => {
     try{
-        console.log('POST: controller / loginga kimdir kirdi!');
-        const data = req.body; // ya'ni POSTMANdagi signup body qismidagi 3ta ma'lumot: mb_nick, mb_password, mb_phone
-        // console.log('Body:::', req.body);
+        console.log('POST: Kimdir LOGIN qildi!');
+        const data = req.body; 
 
         const member = new Member();
         const result = await member.loginData(data);
 
+        const token = memberController.createToken(result);
+        // console.log("TOKEN:::", token);
+        res.cookie('access_token', token, {
+			maxAge: 6 * 3600 * 1000,
+			httpOnly: false,
+		});
+
         res.json({state: 'muvaffaqiyatli', data: result});
     } catch(err){
-        console.log(`ERROR: controller / loginga kirishda xatolik boldi! ${err.message}`);
+        console.log(`ERROR: LOGIN qilishda xatolik boldi! ${err.message}`);
         res.json({state: 'muvaffaqiyatsiz', message: err.message});
     }
 }
 
-// memberController objecti - logout methodini ishga tushiryapdi
 memberController.logout = (req, res) => {
-    console.log('POST: controller / logoutga kimdir kirdi!');
-    res.send("Logout sahifadasiz");
+    console.log('POST: Kimdir LOGOUT qildi!');
+    res.send("Logout bo'ldingiz");
 }
 
+memberController.createToken = (result) => {
+	try {
+		const upload_data = {
+			_id: result._id,
+			mb_nick: result.mb_nick,
+			mb_type: result.mb_type
+		};
 
+		const token = jwt.sign(upload_data, process.env.SECRET_TOKEN, { expiresIn: '6h' });
 
+		assert.ok(token, Definer.auth_err2);
+		return token;
+	} catch (err) {
+		throw err;
+	}
+};
 
+memberController.checkMyAuthentication = (req, res) => {
+	try {
+		console.log('GET: CheckAuthentication');
 
+		let token = req.cookies['access_token'];
+		// console.log("token:::", token);
 
+		const member = token ? jwt.verify(token, process.env.SECRET_TOKEN) : null;
+		assert.ok(member, Definer.auth_err2);
+
+		res.json({ state: 'Muvaffaqiyatli', data: member });
+	} catch (err) {
+		throw err;
+	}
+};
