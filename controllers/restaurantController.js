@@ -87,10 +87,10 @@ restaurantController.signupProcess = async (req, res) => {
     try {
         console.log("POST: kimdir signup qilmoqda");
 
-        assert.ok(null, Definer.general_err3);
+        assert.ok(req.file, Definer.general_err3);
 
-        console.log("req.file", req.file);
-        console.log("req.body", req.body);
+        // console.log("req.file", req.file);
+        // console.log("req.body", req.body);
 
         let new_member = req.body;
         new_member.mb_type = "RESTAURANT";

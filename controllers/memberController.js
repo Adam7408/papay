@@ -19,7 +19,7 @@ memberController.signup = async (req, res) => {
 			httpOnly: false,
 		});
 
-        res.json({state: 'muvaffaqiyatli', data: new_member});
+        res.json({state: 'success', data: new_member});
     } catch(err){ 
         console.log(`ERROR: SIGNUP qilishda xatolik boldi! ${err.message}`); 
         res.json({state: 'muvaffaqiyatsiz', message: err.message}); 
@@ -41,7 +41,7 @@ memberController.login = async (req, res) => {
 			httpOnly: false,
 		});
 
-        res.json({state: 'muvaffaqiyatli', data: result});
+        res.json({state: 'success', data: result});
     } catch(err){
         console.log(`ERROR: LOGIN qilishda xatolik boldi! ${err.message}`);
         res.json({state: 'muvaffaqiyatsiz', message: err.message});
@@ -50,6 +50,7 @@ memberController.login = async (req, res) => {
 
 memberController.logout = (req, res) => {
     console.log('POST: Kimdir LOGOUT qildi!');
+	res.cookie('access_token', null, {maxAge: 0, httpOnly: true});
     res.send("Logout bo'ldingiz");
 }
 
@@ -80,8 +81,37 @@ memberController.checkMyAuthentication = (req, res) => {
 		const member = token ? jwt.verify(token, process.env.SECRET_TOKEN) : null;
 		assert.ok(member, Definer.auth_err2);
 
-		res.json({ state: 'Muvaffaqiyatli', data: member });
+		res.json({ state: 'success', data: member });
 	} catch (err) {
 		throw err;
 	}
 };
+
+memberController.getChosenMember = async (req, res) => {
+	try {
+		console.log('GET cont/getChosenMember');
+
+		const id = req.params.id;
+		const member = new Member();
+		const result = await member.getChosenMemberData(req.member, id);
+
+		// console.log('result:::', result);
+		res.json({ state: 'success', data: result });
+	} catch (err) {
+		console.log(`ERORR, cont/getChosenMember, ${err.message}`);
+
+		const error = `<script>alert("Something went wrong!")</script>`;
+		res.send(error);
+	}
+};
+
+memberController.retrieveAuthMember = async (req, res, next) => {
+	try {
+		const token = req.cookies['access_token'];
+		req.member = token ? jwt.verify(token, process.env.SECRET_TOKEN) : null;
+		next();
+	} catch (err) {
+		console.log(`ERORR: retrieveAuthMember, ${err.message}`);
+		next();
+	}
+}

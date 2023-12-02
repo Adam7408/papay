@@ -1,92 +1,118 @@
-// modellar - classlar bilan hosil bo'ladi
-
-// user kiritgan ma'lumotlardan foydalanib - SIGNUPni hosil qilyapmiz
-
-/*
-Service modelimiz(Member.js)da - Schema model(member.model.js)ni chaqirib olamiz!
-Chunki - Schema Modeldan datalarni olib, pasta ishlov beramiz
-Va Service Model orqali Controllerga yuboramiz
-*/
-const MemberModel = require('../schema/member.model');
-
-// mistake.jsdagi - Definer classni olib kelib, Definer variablega solib olamiz
+const MemberModel = require('../schema/member.model'); // Member Schema Model
 const Definer = require('../lib/mistake');
+const assert = require('assert'); // External package
+const bcrypt = require('bcryptjs'); // External package
+const { shapeIntoMongooseObjectId } = require("../lib/config");
+const View = require("./View");
 
-// assert external packageni install qilamiz, va chaqirib olamiz
-const assert = require('assert'); // assert -- ERROR instrumenti
-
-/*
-Biz userlarimizning passwordlarini - DataBasega to'g'ridan-to'g'ri qo'ymaymiz, shifralab qo'yamiz
-Bcrypt packagening jozibali tomoni - userlarimizning passwordlarini biz ham bilmaymiz, shuning uchun Bcryptni tanlaymiz
-*/
-// bcryptjs external packageni install qilamiz, va chaqirib olamiz
-const bcrypt = require('bcryptjs');
-
-// Member class
-class Member {
+class Member { 
     constructor() {
-        this.memberModel = MemberModel; // memberModel - Member classning statesi!.    MemberModel - buni ichida Schema Modelning ichidagi datalar bor        
+        this.memberModel = MemberModel; // Member Schema Model (class)
     }
 
-    // SIGNUPni mantigini yozamiz
-    async signupData(input) {  // signupData()ni ishi - yangi memberlar hosil qilish, va u memberlarni DataBasega joylashtirish
+    // SIGNUP PROCESS
+    async signupData(input) {  
         try{
-            // DataBasega signup qilyatgan payt userimiz password yozadi
-            // biz o'sha passwordni DataBasega sahranit qilishdan oldin 'hash' qilib olamiz 
-            const salt = await bcrypt.genSalt(); // o'zimiz ham bilmaydigan qilib shifrlab beradi
+            const salt = await bcrypt.genSalt(); 
             input.mb_password = await bcrypt.hash(input.mb_password, salt); 
+    
+            let result; 
+            const new_member = new this.memberModel(input);
             
-            let result; // bu object
-            const new_member = new this.memberModel(input); // new this.memberModel(input) - Schema Model Class
-            try{ // MongoDB boshqacha formatdagi xatolikni beradi, shuning uchun try{} catch(){}ni ishlatamiz
-                result = await new_member.save(); // new_member(inputga kirib kelgan ma'lumotlarni)ni - save() methodi orqali - DataBasege saqlaymiz
-             } catch(mongo_err) { // mongoDBdan kelgan xatoni ushlab oladi
+            try{ 
+                result = await new_member.save(); 
+            } catch(mongo_err) { 
                 console.log(mongo_err);
-                throw new Error(Definer.auth_err1); // o'zimiz hohlagan ERRORni hosil qilib olamiz.   mistake.jsning ichidagi Definer degan classning auth_err1 degan static methodidagi (ya'ni: "att: mongoDB tekshiruvi amalga oshmadi")ni - ERROR qilib ko'rsatsin
+                throw new Error(Definer.auth_err1); 
             }
             
-            result.mb_password = ""; // passwordni o'chirib qo'ysin, ya'ni password kelsin degan logic kiritilmaguncha - DataBase passwordni olib kelmasin
+            result.mb_password = ""; 
 
-            return result; // natijani return qilamiz
-
-        } catch(err) { // error bo'lsa
+            return result; 
+        } catch(err) { 
             throw err;
         }
     }    
 
-    // LOGINni mantigini yozamiz
-    async loginData(input) { // loginda compare algorithmni ishlatamiz
+    // LOGIN PROCESS
+    async loginData(input) { 
         try{
-            const member = await this.memberModel // this.memberModel - Schema Model Classi
-            .findOne( // memberModel classining - static methodi
-                {mb_nick: input.mb_nick}, // mb_nick teng bo'lsin - inputning ichidagi mb_nickga (ya'ni inputga kirib kelgan ma'lumot - mb_nick, mb_password)
-                {mb_nick: 1, mb_password: 1}) // mb_nick kerak, mb_password kerak, bu ikovini majbur chaqir!
-            .exec(); // shu yerda amalga oshiramiz
+            const member = await this.memberModel 
+            .findOne( 
+                {mb_nick: input.mb_nick}, 
+                {mb_nick: 1, mb_password: 1}) 
+            .exec(); 
+            assert.ok(member, Definer.auth_err3); 
 
-            // DataBaseda - mb_nickga oyit data bo'lmasa -- xatolik ko'rsatish uchun ASSERT packagedan foydalanamiz
-            assert.ok(member, Definer.auth_err3); // agar 'member' mavjud bo'lsa yoki true qiymatiga ega bo'lsa - hech qanday xatosiz o'tib ketaversin.    agar 'member' mavjud bo'lmasa yoki  false, null qiymatiga ega bo'lsa - ERRORni ko'rsatsin
-        
-            // const isMatch = input.mb_password === member.mb_password; // agar inputga kiritilgan password teng bo'lsa - memberning ichidagi passwordga (ya'ni DataBasedagi password)
-
-            // compare qilamiz
-            const isMatch = await bcrypt.compare( // inputga kiritilgan password bilan DataBasedan kelgan passwordni solishtirib, bizga tatijasini aytadi
-                input.mb_password,  // inputga kiritilgan password
-                member.mb_password  // DataBasedan kelgan password
+            const isMatch = await bcrypt.compare( 
+                input.mb_password,  
+                member.mb_password  
             );
+            assert.ok(isMatch, Definer.auth_err4); 
 
-            assert.ok(isMatch, Definer.auth_err4); // agar isMatch true bo'lsa o'tib ketaversin,  false bo'lsa - ERRORni chiqarsin
-
-
-            // manashu yergacha bajarilib kelsa - u user validated(tastiqlangan) hisoblanadi
             return await this.memberModel
-            .findOne({
-                mb_nick: input.mb_nick // mb_nick teng bo'lsin - inputdagi mb_nickga (ya'ni inpub.mb_nick desak ham, member.mb_nick desak ham bo'ladi, chunki ikovini qiymati bir hil)
-            })
-            .exec();
+                .findOne({
+                    mb_nick: input.mb_nick 
+                })
+                .exec();
         } catch(err) {
             throw err;
         }
     }
+
+    // MEMBER DATA
+    async getChosenMemberData(member, id) { 
+        try{
+			id = shapeIntoMongooseObjectId(id);
+
+            console.log('member:::', member);
+
+            if (member) {
+				// Condition if not seen before
+				await this.viewChosenItemByMember(member, id, 'member');
+			}
+
+			const result = await this.memberModel
+                .aggregate([ 
+                    { $match: {_id: id, mb_status: "ACTIVE"} },
+                    { $unset: "mb_password" }
+                ])
+                .exec();
+
+			assert.ok(result, Definer.general_err2);
+
+			return result[0];
+        } catch(err) {
+            throw err;
+        }
+    }
+
+    async viewChosenItemByMember(member, view_ref_id, group_type) {
+		try {
+			view_ref_id = shapeIntoMongooseObjectId(view_ref_id);
+			const mb_id = shapeIntoMongooseObjectId(member._id);
+
+			const view = new View(mb_id);
+
+			//Validation needed
+			const isValid = await view.validateChosenTarget(view_ref_id, group_type);
+			// console.log('isValid:::', isValid);
+			assert.ok(isValid, Definer.general_err2);
+
+			// logged user has seen target before
+            const doesExist = await view.checkViewExistence(view_ref_id);
+			console.log('doesExist:::', doesExist);
+
+            if (!doesExist) {
+				const result = await view.insertMemberView(view_ref_id, group_type);
+				assert.ok(result, Definer.general_err1);
+                // console.log('result:::', result);
+			}
+			return true;
+		} catch (err) {
+			throw err;
+		}
+	}
 }
 
 module.exports = Member;
