@@ -2,19 +2,18 @@ const express = require('express');
 const router = express.Router(); 
 const memberController = require("./controllers/memberController");
 const productController = require("./controllers/productController");
+const restaurantController = require("./controllers/restaurantController");
 
 
 /**************************************************************************
  *             REST API(REACT uchun kerak bo'lgan router)                 *
  **************************************************************************/
 
-// Member related routers
-router.post("/signup",  memberController.signup); 
+// MEMBER related routers
+router.post("/signup", memberController.signup); 
 router.post("/login", memberController.login);
-router.get("/logout",memberController.logout);
-
+router.get("/logout", memberController.logout);
 router.get("/check-me", memberController.checkMyAuthentication);
-
 router.get(
     "/member/:id", 
     memberController.retrieveAuthMember,
@@ -22,7 +21,7 @@ router.get(
 );
 
 
-// Product related routers
+// PRODUCT related routers
 router.post(
     "/products", 
     memberController.retrieveAuthMember,
@@ -33,6 +32,13 @@ router.get(
     "/products/:id", 
     memberController.retrieveAuthMember,
     productController.getChosenProduct
+);
+
+// RESTAURNAT related routers
+router.get(
+    "/restaurants", 
+    memberController.retrieveAuthMember,
+    restaurantController.getRestaurants
 );
 
 module.exports = router; 
