@@ -47,6 +47,30 @@ class Restaurant {
 		}
 	}
 
+	async getChosenRestaurantData(member, id) {
+		try {
+			id = shapeIntoMongooseObjectId(id);
+
+			if (member) {
+				const member_obj = new Member();
+				await member_obj.viewChosenItemByMember(member, id, 'member');
+			}
+
+			const result = await this.memberModel
+				.findOne({
+					_id: id,
+					mb_status: 'ACTIVE',
+				})
+				.exec();
+				
+			assert.ok(result, Definer.auth_err2);
+
+			return result;
+		} catch (err) {
+			throw err;
+		}
+	}
+
 	async getAllRestaurantsData() {
 		try {
 			const result = await this.memberModel

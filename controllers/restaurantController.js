@@ -9,7 +9,7 @@ let restaurantController = module.exports;
 //============================================== GET ===============================================================
 restaurantController.getRestaurants = async (req, res) => {
 	try {
-		console.log('GET: getRestaurantsga kimdir kirdi');
+		console.log('GET: Kimdir Restaurant pageda!');
 		const data = req.query;
         console.log("QUERY Data:::", data);
 
@@ -17,8 +17,25 @@ restaurantController.getRestaurants = async (req, res) => {
 		const result = await restaurant.getRestaurantsData(req.member, data);
 		res.json({ state: 'muvaffaqiyatli', data: result });
 	} catch (err) {
-		console.log(`ERROR: getRestaurantsga kirishda xatolik bor, ${err.message}`);
+		console.log(`ERROR: Restaurant page kirishda xatolik bo'ldi, ${err.message}`);
 		res.json({ state: 'muvaffaqiyatsiz', message: err.message });
+	}
+};
+
+//============================================== GET ===============================================================
+restaurantController.getChosenRestaurant = async (req, res) => {
+	try {
+		console.log("GET: User bir restaurantni tanladi!");
+		const id = req.params.id;
+        console.log("ID:::", id);
+        
+		const restaurant = new Restaurant();
+		const result = await restaurant.getChosenRestaurantData(req.member, id);
+
+		res.json({ state: 'Muvaffaqiyatli', data: result });
+	} catch (err) {
+		console.log(`ERROR: Restaurant tanlashda xatolik bo'ldi!, ${err.message}`);
+		res.json({ state: 'Muvaffaqiyatsiz!', message: err.message });
 	}
 };
 
@@ -26,20 +43,7 @@ restaurantController.getRestaurants = async (req, res) => {
  *             BSSR RELATED METHODS              *
  *************************************************/
 
-//============================================== GET ===============================================================
-restaurantController.getChosenRestaurant = async (req, res) => {
-	try {
-		console.log("GET: Admin restaurantni o'zgartirmoqda");
-		const id = req.params.id,
-			restaurant = new Restaurant(),
-			result = await restaurant.getChosenRestaurantData(req.member, id);
 
-		res.json({ state: 'muvaffaqiyatli', data: result });
-	} catch (err) {
-		console.log(`ERROR: restaurantni o'zgartirishda xatolik bor, ${err.message}`);
-		res.json({ state: 'fail', message: err.message });
-	}
-};
 
 //================================================= GET ===============================================================
 restaurantController.home = (req, res) => {
@@ -97,7 +101,6 @@ restaurantController.signupProcess = async (req, res) => {
 
         const member = new Member();
         const result = await member.signupData(new_member);
-
         assert.ok(result, Definer.general_err1);
 
         // SESSION
@@ -106,9 +109,7 @@ restaurantController.signupProcess = async (req, res) => {
         res.redirect("/resto/products/menu"); 
     } catch(err){
         console.log(`ERROR: signup qilishda xatolik boldi! ${err.message}`);
-        res.send(
-            `<script> alert("${err.message}"); window.location.replace("/resto/sign-up"); </script>`
-        );
+        res.send(`<script> alert("${err.message}"); window.location.replace("/resto/sign-up"); </script>`);
     }
 };
 
@@ -206,7 +207,8 @@ restaurantController.getAllRestaurants = async (req, res) => {
 
 		const restaurant = new Restaurant();
 		const restaurants_data = await restaurant.getAllRestaurantsData();
-		console.log( "restaurants_data:", restaurants_data );
+		console.log( "restaurants_data:::", restaurants_data );
+
 		res.render('all-restaurant', { restaurants_data: restaurants_data });
 	} catch (err) {
 		console.log(`ERROR: all-restaurant pagega kirishda xatolik bor, ${err.message}`);
@@ -222,11 +224,9 @@ restaurantController.updateRestaurantByAdmin = async (req, res) => {
 
 		const restaurant = new Restaurant();
 		const result = await restaurant.updateRestaurantByAdminData(req.body);
-        
+        console.log("result::: ", result);
 
 		await res.json({ state: 'muvaffaqiyatli', data: result });
-
-        console.log("result::: ", result);
 	} catch (err) {
 		console.log(`ERROR: o'zgartirishda xatolik bor, ${err.message}`);
 		res.json({ state: 'muvaffaqiyatsiz!', message: err.message });
