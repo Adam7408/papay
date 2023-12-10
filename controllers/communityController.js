@@ -25,7 +25,7 @@ communityController.imageInsertion = async (req, res) => {
 communityController.createArticle = async (req, res) => {
     try{
         console.log("POST: User article yasamoqda!");
-        // console.log("req.BODY:::", req.body);
+        console.log("req.BODY:::", req.body);
 
         const community = new Community();
         const result = await community.createArticleData(req.member, req.body);
@@ -36,6 +36,26 @@ communityController.createArticle = async (req, res) => {
         console.log(`ERROR: article yasashda xatolik bo'ldi!, ${err.message}`); 
         res.json({state: 'muvaffaqiyatsiz', message: err.message});
     }
-}
+};
 
+communityController.getMemberArticles = async (req, res) => {
+    try{
+        console.log("GET: User boshqa bir userning article pagesiga ko'rmoqda!");
 
+        const mb_id = req.query.mb_id !== 'none' 
+            ? req.query.mb_id 
+            : req.member._id; // Authentication bo'lgan userning _idsi
+        assert.ok(mb_id, Definer.article_err1);
+
+        // console.log("mb_id:::", mb_id);
+        // console.log("QUERY:::", req.query.mb_id);
+        
+        const community = new Community();
+        const result = await community.getMemberArticlesData(req.member, mb_id, req.query);
+
+        res.json({state: 'Muvaffaqiyatli', data: result});
+    } catch(err) {
+        console.log(`ERROR: article pagega kirishda xatolik bo'ldi!, ${err.message}`); 
+        res.json({state: 'muvaffaqiyatsiz', message: err.message});
+    }
+};
