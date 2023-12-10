@@ -38,3 +38,20 @@ orderController.getMyOrders = async (req, res) => {
         res.json({state: 'muvaffaqiyatsiz', message: err.message});
     }
 }
+
+orderController.editChosenOrder = async (req, res) => {
+    try{
+        console.log("POST: User orderni o'zgartirmoqda!");
+        // console.log("req.body:::", req.body);
+
+        assert.ok(req.member, Definer.auth_err5);
+
+        const order = new Order();
+        const result = await order.editChosenOrderData(req.member, req.body);
+
+        res.json({state: 'Muvaffaqiyatli', data: result});
+    } catch(err) {
+        console.log(`ERROR: Orderni o'zgartirishda xatolik bo'ldi, ${err.message}`); 
+        res.json({state: 'muvaffaqiyatsiz', message: err.message});
+    }
+}
