@@ -59,3 +59,18 @@ communityController.getMemberArticles = async (req, res) => {
         res.json({state: 'muvaffaqiyatsiz', message: err.message});
     }
 };
+
+communityController.getArticles = async (req, res) => {
+    try{
+        console.log("GET: User community pagega kirdi!");
+        // console.log("QUERY:::", req.query);
+
+        const community = new Community();
+        const result = await community.getArticlesData(req.member, req.query);
+        
+        res.json({state: 'Muvaffaqiyatli', data: result});
+    } catch(err) {
+        console.log(`ERROR: Community pagega kirishda xatolik bo'ldi, ${err.message}`); 
+        res.json({state: 'muvaffaqiyatsiz', message: err.message});
+    }
+}
