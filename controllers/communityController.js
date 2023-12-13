@@ -73,4 +73,22 @@ communityController.getArticles = async (req, res) => {
         console.log(`ERROR: Community pagega kirishda xatolik bo'ldi, ${err.message}`); 
         res.json({state: 'muvaffaqiyatsiz', message: err.message});
     }
+};
+
+communityController.getChosenArticle = async (req, res) => {
+    try{
+        console.log("GET: User bir articleni tanladi!");
+
+        const art_id = req.params.art_id;
+        // console.log("ART_ID:::", art_id);
+        // console.log("req.PARAMS:::",  req.params);
+
+        const community = new Community();
+        const result = await community.getChosenArticleData(req.member, art_id);
+
+        res.json({state: 'Muvaffaqiyatli', data: result});
+    } catch(err) {
+        console.log(`ERROR: article tanlashda xatolik bo'ldi!, ${err.message}`); 
+        res.json({state: 'muvaffaqiyatsiz', message: err.message});
+    }
 }
